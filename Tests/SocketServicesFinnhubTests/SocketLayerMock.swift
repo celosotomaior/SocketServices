@@ -1,6 +1,9 @@
 
 import Foundation
 
+@testable import SocketServicesFinnhub
+
+
 class SocketLayerMock: SocketLayer {
     
     var isConnectionStart = false
