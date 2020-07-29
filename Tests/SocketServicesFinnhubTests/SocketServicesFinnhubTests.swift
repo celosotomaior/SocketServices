@@ -2,14 +2,35 @@ import XCTest
 @testable import SocketServicesFinnhub
 
 final class SocketServicesFinnhubTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(SocketServicesFinnhub().text, "Hello, World!")
-    }
 
-    static var allTests = [
-        ("testExample", testExample),
-    ]
-}
+
+        
+        var sut: SocketProvider!
+        var layerMock: SocketLayerMock!
+        
+        override func setUp() {
+            super.setUp()
+            sut = SocketProvider(token: "")
+            
+            layerMock = SocketLayerMock()
+            sut.socketLayer = layerMock
+        }
+        
+        func test_StartConnect_WhenLayerMock_ShouldStartConnection() {
+            sut.startConnect(completionConnect: { (connect, error) in
+                XCTAssertTrue(self.layerMock.isConnectionStart)
+            }) { (company) in
+                XCTAssertTrue(self.layerMock.isConnectionStart)
+            }
+        }
+        
+        func test_HandleSubscription_WhenSubscribe_ShouldCallLayer() {
+            sut.handleSubscription(with: .subscribe, "AMZN")
+            XCTAssertTrue(self.layerMock.handledSubscription)
+        }
+        
+        static var allTests = [
+            ("StartConnect", test_StartConnect_WhenLayerMock_ShouldStartConnection),
+            ("HandleSubscription", test_HandleSubscription_WhenSubscribe_ShouldCallLayer),
+        ]
+    }
